@@ -13,7 +13,19 @@ export function addClass(el, className) {
     el.className = newClass.join(' ')
 }
 
+// 匹配 dom 节点
 export function hasClass(el, className) {
     let reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
     return reg.test(el.className)
+}
+
+// 获取或设置 dom 节点的属性
+export function getData(el, name, val) {
+    const prefix = 'data-'
+    name = `${prefix}${name}`
+    if (val) {
+        return el.setAttribute(name, val)
+    } else {
+        return el.getAttribute(name)
+    }
 }
