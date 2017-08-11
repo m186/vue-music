@@ -1,22 +1,22 @@
 <template>
 	<scroll :data="data" class="listview" ref="listview" :listenScroll="listenScroll" :probeType="probeType" @scroll="scroll">
 		<ul>
-		<li v-for="group in data " class="list-group" ref="listGroup">
-			<h2 class="list-group-title">{{group.title}}</h2>
-			<uL>
-			<li v-for="item in group.items" class="list-group-item" @click="singerDetails(item)">
-				<img class="avatar" v-lazy="item.avatar">
-				<span class="name">{{item.name}}</span>
+			<li v-for="group in data " class="list-group" ref="listGroup">
+				<h2 class="list-group-title">{{group.title}}</h2>
+				<uL>
+					<li v-for="item in group.items" class="list-group-item" @click="singerDetails(item)">
+						<img class="avatar" v-lazy="item.avatar">
+						<span class="name">{{item.name}}</span>
+					</li>
+				</uL>
 			</li>
-			</uL>
-		</li>
 		</ul>
 		<div class="list-shortcut" @touchstart.prevent="moveStart">
-		<ul>
-			<li v-for="(item, index) in shortcutList" class="item" :data-index="index" :class="{'current': currentIndex === index}">
-				{{item}}
-			</li>
-		</ul>
+			<ul>
+				<li v-for="(item, index) in shortcutList" class="item" :data-index="index" :class="{'current': currentIndex === index}">
+					{{item}}
+				</li>
+			</ul>
 		</div>
 		<div class="list-fixed" v-show="fixedTitle">
 			<h1 class="fixed-title">{{fixedTitle}}</h1>
