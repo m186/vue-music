@@ -18,6 +18,9 @@
 			</li>
 		</ul>
 		</div>
+		<div class="list-fixed" v-show="fixedTitle">
+			<h1 class="fixed-title">{{fixedTitle}}</h1>
+		</div>
 	</scroll>  
 </template>
 
@@ -42,6 +45,12 @@ export default {
 			return this.data.map((group) => {
 				return group.title.substr(0, 1)
 			})
+		},
+		fixedTitle() {
+			if (this.scrollY > 0) {
+				return
+			}
+			return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
 		}
 	},
 	data() {
@@ -140,6 +149,7 @@ export default {
 	}
 	.list-group {
 		margin-left: -80px;
+		margin-top: -20px;
 	}
 	.list-group-title {
 		text-align: left;
@@ -191,17 +201,18 @@ export default {
 	}
 	.list-fixed {
 		position: absolute;
-		top: 0;
+		top: -10px;
 		left: 0;
 		width: 100%;
 	}
 	.fixed-title {
 		height: 30px;
 		line-height: 30px;
-		padding-left: 20px;
-		font-size: 16px;
+		font-size: 14px;
 		color: #ccc;
-		background: teal;
+		background: #666;
+		text-align: left;
+		padding-left: 20px;
 	}
 	.loading-container {
 		position: absolute;
