@@ -4,7 +4,7 @@
 			<li v-for="group in data " class="list-group" ref="listGroup">
 				<h2 class="list-group-title">{{group.title}}</h2>
 				<uL>
-					<li v-for="item in group.items" class="list-group-item" @click="singerDetails(item)">
+					<li v-for="item in group.items" class="list-group-item" @click="selectItem(item)">
 						<img class="avatar" v-lazy="item.avatar">
 						<span class="name">{{item.name}}</span>
 					</li>
@@ -105,8 +105,8 @@ export default {
 		},
 
 		// 跳转至歌手详情
-		singerDetails(item) {
-			// console.log(item)
+		selectItem(item) {
+			this.$emit('select', item)
 		}
 	},
 	watch: {
