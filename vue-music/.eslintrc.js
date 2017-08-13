@@ -46,6 +46,7 @@ module.exports = {
         'no-unused-vars': 0,
         'no-labels': 0,
         'no-label-var': 0,
-        'space-infix-ops': 0
+        'space-infix-ops': 0,
+        'space-before-blocks': 0
     }
 }
