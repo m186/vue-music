@@ -27,7 +27,7 @@ export default {
 	methods: {
 		// 获取listView 页面传递过来被点击的歌手信息
 		selectSinger(singer) {
-			this.$router.push({
+			this.$router.push({ // router跳转
 				path: `/singer/${singer.id}`
 			})
 			this.setSinger(singer)
