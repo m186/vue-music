@@ -47,6 +47,8 @@ module.exports = {
         'no-labels': 0,
         'no-label-var': 0,
         'space-infix-ops': 0,
-        'space-before-blocks': 0
+        'space-before-blocks': 0,
+        'quotes': 0,
+        'yoda': 0
     }
 }

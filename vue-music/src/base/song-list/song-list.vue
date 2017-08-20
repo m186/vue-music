@@ -1,10 +1,10 @@
 <template>
     <div class="song-list">
         <ul>
-            <li v-for="song in songs" class="item">
+            <li v-for="song in songs" class="items">
                 <div class="content">
                     <h2 class="name">{{song.name}}</h2>
-                    <p class="desc"></p>
+                    <p class="desc">{{getDesc(song)}}</p>
                 </div>
             </li>
         </ul>
@@ -18,17 +18,25 @@ export default {
             type: Array,
             default: []
         }
+    },
+    methods: {
+        getDesc(song) {
+            return `${song.singer}.${song.album}`
+        }
     }
 }
 </script>
 
 <style>
-    .item{
+    .items{
         display: flex;
         align-items: center;
         box-sizing: border-box;
         height: 64px;
-        font-size: 14px;
+        font-size: 10px;
+        margin-left:-30px;
+        text-align: left;
+        margin-bottom: 6px;
     }
     .rank{
         flex: 0 0 25px;
@@ -57,7 +65,7 @@ export default {
     }
     .content{
         flex: 1;
-        line-height: 20px;
+        line-height: 14px;
         overflow: hidden;
     }
     .name{

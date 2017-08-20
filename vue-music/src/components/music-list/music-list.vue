@@ -9,13 +9,28 @@
             <i class="icon-back"></i>
         </div>
         <h1 class="title" v-html="title"></h1>
-        <div class="bg-image" :style="bgStyle">
-            <div class="filter" ></div>
+        <div class="bg-image" :style="bgStyle" ref="bgImage">
+            <div class="play-wrapper">
+                <div class="play" v-show="songs.length>0 && zIndexs != 10">
+                    <i class="icon-play"></i>
+                    <span class="texts">随机播放全部</span>
+                </div>
+            </div>
+            <div class="filter" ref="filter"></div>
         </div>
+        <div class="bg-layer" ref="layer"></div>
+        <scroll @scroll="scroll" :probeType="probeType" :listenScroll="listenScroll" :data="songs" class="list" ref="list">
+            <div class="song-list-wrapper">
+                <song-list :songs="songs"></song-list>
+            </div>
+        </scroll>
     </div>
 </template>
 
 <script>
+import Scroll from '@/base/scroll'
+import SongList from '@/base/song-list/song-list'
+const FIX_HEIGHT = 50
 export default {
     props: {
         bgImage: {
@@ -31,18 +46,71 @@ export default {
             default: ''
         },
     },
+    data() {
+        return {
+            scrollY: 0, // y轴滚动的距离
+            zIndexs: 0
+        }
+    },
+    components: {
+        Scroll,
+        SongList
+    },
     computed: {
         bgStyle() {
             return `background-image: url(${this.bgImage})`
         }
     },
     created() {
-        
+        this.probeType = 3
+        this.listenScroll = true
+    },
+    mounted() {
+        this.imageHeight = this.$refs.bgImage.clientHeight
+        this.minTranslateY = -this.imageHeight + FIX_HEIGHT
+        this.$refs.list.$el.style.top = `${this.imageHeight}px`
     },
     methods: {
         // 返回按钮,返回歌手列表页
         back() {
-             this.$router.push('/singer')
+             this.$router.back()
+        },
+
+        // 监听滚动的上下距离
+        scroll(pos) {
+            this.scrollY = pos.y
+        }
+    },
+    watch: {
+        scrollY(newY) {
+            let translateY = Math.max(this.minTranslateY, newY)
+            let zIndex = this.zIndexs =0
+            let scale = 1
+            let blur = 0
+            this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
+            this.$refs.layer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+            const percent = Math.abs(newY / this.imageHeight)
+            if (newY > 0) {
+                scale = 1 + percent
+                zIndex = 10
+            } else {
+                blur = Math.min(20 * percent, 20)
+            }
+            // 高斯模糊backdrop-filter属性,仅支持ios手机端
+            this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
+            this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur}px)`
+            if (newY < this.minTranslateY) {
+                zIndex = this.zIndexs = 10
+                this.$refs.bgImage.style.paddingTop = '14%'
+                this.$refs.bgImage.style.height = `${FIX_HEIGHT}`
+            } else {
+                // debugger
+                this.$refs.bgImage.style.paddingTop = '70%'
+                this.$refs.bgImage.style.height = 0
+            }
+            this.$refs.bgImage.style.zIndex = zIndex
+            this.$refs.bgImage.style['transform'] = `scale(${scale})`
+            this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
         }
     }
 }
@@ -66,7 +134,7 @@ export default {
     }
     .icon-back{
         background: url('../../common/images/arrow.png') no-repeat;
-         background-size: 16px 16px; 
+        background-size: 16px 16px; 
         display: block;
         padding: 15px;
         font-size: 14px;
@@ -105,21 +173,25 @@ export default {
         padding: 7px 0;
         margin: 0 auto;
         text-align: center;
-        border: 1px solid teal;
-        color: #fff;
+        border: 1px solid rgb(195, 218, 25);
+        color: rgb(195, 218, 25);
         border-radius: 100px;
         font-size: 0;
     }
     .icon-play{
+        background: url('../../common/images/play.png') no-repeat;
+        background-size: 16px 16px;
+        padding: 10px;
         display: inline-block;
         vertical-align: middle;
-        margin-right: 6px;
+        margin: 1px 6px 0 0;
         font-size: 14px;
     }
-    .text{
+    .texts{
         display: inline-block;
         vertical-align: middle;
         font-size: 14px;
+        color: rgb(195, 218, 25);
     }
     .filter{
         position: absolute;
@@ -132,17 +204,18 @@ export default {
     .bg-layer{
         position: relative;
         height: 100%;
-        background: oranger;
+        background: rgb(60, 60, 60);
     }
     .list{
         position: fixed;
         top: 0;
         bottom: 0;
+         /* overflow:hidden;  */
         width: 100%;
-        background: #abcdef;
+        background: rgb(60, 60, 60);
     }
     .song-list-wrapper{
-        padding: 20px 30px;
+        padding: 6px 30px;
     }
     .loading-container{
         position: absolute;
