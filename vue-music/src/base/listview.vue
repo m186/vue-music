@@ -21,12 +21,12 @@
 		<div class="list-fixed" v-show="fixedTitle">
 			<h1 class="fixed-title">{{fixedTitle}}</h1>
 		</div>
-	</scroll>  
+	</scroll>
 </template>
 
 <script>
 import Scroll from '@/base/scroll'
-import {getData} from 'common/js/dom'
+import { getData } from 'common/js/dom'
 
 const ANCHOR_HEIGHT = 16
 
@@ -85,7 +85,7 @@ export default {
 				index = this.listenHeight.length - 2
 			}
 			this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
-			
+
 		},
 
 		// 滚动事件
@@ -124,9 +124,9 @@ export default {
 			}
 
 			// 当在中间部分滚动
-			for(let i = 0; i<listHeight.length-1; i++) {
+			for (let i = 0; i < listHeight.length - 1; i++) {
 				let height1 = listHeight[i]
-				let height2 = listHeight[i+1]
+				let height2 = listHeight[i + 1]
 				if (!height2 || (-newY >= height1 && -newY < height2)) {
 					this.currentIndex = i
 					return false
@@ -134,90 +134,101 @@ export default {
 			}
 
 			// 当滚动到底部，且-newY大于最后一个元素的上限
-			this.currentIndex = listHeight.length -2 // 因为右侧字母元素比左侧多一个
+			this.currentIndex = listHeight.length - 2 // 因为右侧字母元素比左侧多一个
 		}
 	}
 }
 </script>
 
 <style scoped>
-	.listview {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-	}
-	.list-group {
-		margin-left: -80px;
-		margin-top: -20px;
-	}
-	.list-group-title {
-		text-align: left;
-		height: 30px;
-		line-height: 30px;
-		padding-left: 60px;
-		font-size: 14px;
-		color: #ccc;
-		background: #666;
-	}
-	.list-group-item {
-		display: flex;
-		align-items: center;
-		padding: 10px 0 10px 28px;
-	}
-	.avatar {
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-	}
-	.name {
-		margin-left: 20px;
-		color: #ccc;
-		font-size: 14px;
-	}
-	.list-shortcut {
-		position: absolute;
-		z-index: 30;
-		right: 0;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 20px;
-		padding: 10px 0;
-		border-radius: 10px;
-		background: #333;
-		font-family: Helvetica;
-		text-align: left;
-	}
-	.item {
-		list-style: none;
-		padding: 3px 0 3px 0;
-		line-height: 1;
-		color: #ccc;
-		font-size: 12px;
-		margin-left: -34px; 
-	}
-	.current {
-		color: orange;
-	}
-	.list-fixed {
-		position: absolute;
-		top: -10px;
-		left: 0;
-		width: 100%;
-	}
-	.fixed-title {
-		height: 30px;
-		line-height: 30px;
-		font-size: 14px;
-		color: #ccc;
-		background: #666;
-		text-align: left;
-		padding-left: 20px;
-	}
-	.loading-container {
-		position: absolute;
-		width: 100%;
-		top: 50%;
-		transform: translateY(-50%);
-	}
+.listview {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.list-group {
+	margin-left: -80px;
+	margin-top: -20px;
+}
+
+.list-group-title {
+	text-align: left;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 60px;
+	font-size: 14px;
+	color: #ccc;
+	background: #666;
+}
+
+.list-group-item {
+	display: flex;
+	align-items: center;
+	padding: 10px 0 10px 28px;
+}
+
+.avatar {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+}
+
+.name {
+	margin-left: 20px;
+	color: #ccc;
+	font-size: 14px;
+}
+
+.list-shortcut {
+	position: absolute;
+	z-index: 30;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 20px;
+	padding: 10px 0;
+	border-radius: 10px;
+	background: #333;
+	font-family: Helvetica;
+	text-align: left;
+}
+
+.item {
+	list-style: none;
+	padding: 3px 0 3px 0;
+	line-height: 1;
+	color: #ccc;
+	font-size: 12px;
+	margin-left: -34px;
+}
+
+.current {
+	color: orange;
+}
+
+.list-fixed {
+	position: absolute;
+	top: -10px;
+	left: 0;
+	width: 100%;
+}
+
+.fixed-title {
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	color: #ccc;
+	background: #666;
+	text-align: left;
+	padding-left: 20px;
+}
+
+.loading-container {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+}
 </style>
