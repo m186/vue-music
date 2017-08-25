@@ -5,18 +5,21 @@
 		<keep-alive>  <!--keep-alive 标签可以将 router 标签的内容进行缓存-->
 			<router-view></router-view>
 		</keep-alive>
+		<player></player>
 	</div>
 </template>
 
 <script>
 import Tab from 'components/tab/tab'
 import MHeader from 'components/m-header/m-header'
+import Player from 'components/player/player'
 
 export default {
 	name: 'app',
 	components: {
 		Tab,
-		MHeader
+		MHeader,
+		Player
 	}
 }
 </script>

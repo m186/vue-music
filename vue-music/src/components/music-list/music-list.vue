@@ -21,7 +21,7 @@
         <div class="bg-layer" ref="layer"></div>
         <scroll @scroll="scroll" :probeType="probeType" :listenScroll="listenScroll" :data="songs" class="list" ref="list">
             <div class="song-list-wrapper">
-                <song-list :songs="songs"></song-list>
+                <song-list @select="selectItem" :songs="songs"></song-list>
             </div>
         </scroll>
     </div>
@@ -30,6 +30,8 @@
 <script>
 import Scroll from '@/base/scroll'
 import SongList from '@/base/song-list/song-list'
+import {mapActions} from 'vuex'
+
 const FIX_HEIGHT = 50
 export default {
     props: {
@@ -73,18 +75,30 @@ export default {
     methods: {
         // 返回按钮,返回歌手列表页
         back() {
-             this.$router.back()
+            this.$router.back()
         },
 
         // 监听滚动的上下距离
         scroll(pos) {
             this.scrollY = pos.y
-        }
+        },
+
+        // 子组件传回的 select 事件
+        selectItem(item, index) {
+            this.selectPlay({
+                list: this.songs,
+                index
+            })
+        },
+
+        ...mapActions([
+            'selectPlay'
+        ])
     },
     watch: {
         scrollY(newY) {
             let translateY = Math.max(this.minTranslateY, newY)
-            let zIndex = this.zIndexs =0
+            let zIndex = this.zIndexs = 0
             let scale = 1
             let blur = 0
             this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
@@ -116,111 +130,124 @@ export default {
 }
 </script>
 
-<style>
-    .music-list{
-        position: fixed;
-        z-index: 100;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: #fff;
-    }
-    .back{
-        position: absolute;
-        top: 0;
-        left: 6px;
-        z-index: 50;
-    }
-    .icon-back{
-        background: url('../../common/images/arrow.png') no-repeat;
-        background-size: 16px 16px; 
-        display: block;
-        padding: 15px;
-        font-size: 14px;
-        margin-top: 20px;
-        /* color: #000; */
-    }
-    .title{
-        position: absolute;
-        top: 0;
-        left: 10%;
-        z-index: 40;
-        width: 80%;
-        /* no-wrap() */
-        text-align: center;
-        line-height: 40px;
-        font-size: 16px;
-        color: #fff;
-    }
-    .bg-image{
-        position: relative;
-        width: 100%;
-        height: 0;
-        padding-top: 70%;
-        transform-origin: top;
-        background-size: cover;
-    }
-    .play-wrapper{
-        position: absolute;
-        bottom: 20px;
-        z-index: 50;
-        width: 100%;
-    }
-    .play{
-        box-sizing: border-box;
-        width: 135px;
-        padding: 7px 0;
-        margin: 0 auto;
-        text-align: center;
-        border: 1px solid rgb(195, 218, 25);
-        color: rgb(195, 218, 25);
-        border-radius: 100px;
-        font-size: 0;
-    }
-    .icon-play{
-        background: url('../../common/images/play.png') no-repeat;
-        background-size: 16px 16px;
-        padding: 10px;
-        display: inline-block;
-        vertical-align: middle;
-        margin: 1px 6px 0 0;
-        font-size: 14px;
-    }
-    .texts{
-        display: inline-block;
-        vertical-align: middle;
-        font-size: 14px;
-        color: rgb(195, 218, 25);
-    }
-    .filter{
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(7, 17, 27, 0.4);
-    }
-    .bg-layer{
-        position: relative;
-        height: 100%;
-        background: rgb(60, 60, 60);
-    }
-    .list{
-        position: fixed;
-        top: 0;
-        bottom: 0;
-         /* overflow:hidden;  */
-        width: 100%;
-        background: rgb(60, 60, 60);
-    }
-    .song-list-wrapper{
-        padding: 6px 30px;
-    }
-    .loading-container{
-        position: absolute;
-        width: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-    }
+<style scoped>
+.music-list {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #fff;
+}
+
+.back {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    z-index: 50;
+}
+
+.icon-back {
+    background: url('../../common/images/arrow.png') no-repeat;
+    background-size: 16px 16px;
+    display: block;
+    padding: 15px;
+    font-size: 14px;
+    margin-top: 20px;
+    /* color: #000; */
+}
+
+.title {
+    position: absolute;
+    top: 0;
+    left: 10%;
+    z-index: 40;
+    width: 80%;
+    /* no-wrap() */
+    text-align: center;
+    line-height: 40px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.bg-image {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 70%;
+    transform-origin: top;
+    background-size: cover;
+}
+
+.play-wrapper {
+    position: absolute;
+    bottom: 20px;
+    z-index: 50;
+    width: 100%;
+}
+
+.play {
+    box-sizing: border-box;
+    width: 135px;
+    padding: 7px 0;
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid rgb(195, 218, 25);
+    color: rgb(195, 218, 25);
+    border-radius: 100px;
+    font-size: 0;
+}
+
+.icon-play {
+    background: url('../../common/images/play.png') no-repeat;
+    background-size: 16px 16px;
+    padding: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 1px 6px 0 0;
+    font-size: 14px;
+}
+
+.texts {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgb(195, 218, 25);
+}
+
+.filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 17, 27, 0.4);
+}
+
+.bg-layer {
+    position: relative;
+    height: 100%;
+    background: rgb(60, 60, 60);
+}
+
+.list {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    /* overflow:hidden;  */
+    width: 100%;
+    background: rgb(60, 60, 60);
+}
+
+.song-list-wrapper {
+    padding: 6px 30px;
+}
+
+.loading-container {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
 </style>
