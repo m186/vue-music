@@ -1,63 +1,70 @@
 <template>
     <div class="player" v-show="playList.length>0">
-        <div class="normal-player" v-show="fullScreen">
-            <div class="background">
-                <img :src="currentSong.image" alt="" width="100%" height="100%">
-            </div>
-            <div class="top">
-                <div class="back" @click="back">
-                    <i class="icon-back"></i>
+        <transition name="normal" @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave">
+            <div class="normal-player" v-show="fullScreen">
+                <div class="background">
+                    <img :src="currentSong.image" alt="" width="100%" height="100%">
                 </div>
-            </div>
-            <h1 class="title" v-html="currentSong.name"></h1>
-            <h2 class="subtitle" v-html="currentSong.singer"></h2>
-            <div class="middle">
-                <div class="middle-l">
-                    <div class="cd-wrapper">
-                        <div class="cd">
-                            <img :src="currentSong.image" alt="" class="image">
+                <div class="top">
+                    <div class="back" @click="back">
+                        <i class="icon-back"></i>
+                    </div>
+                </div>
+                <h1 class="title" v-html="currentSong.name"></h1>
+                <h2 class="subtitle" v-html="currentSong.singer"></h2>
+                <div class="middle">
+                    <div class="middle-l">
+                        <div class="cd-wrapper">
+                            <div class="cd">
+                                <img :src="currentSong.image" alt="" class="image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="operators">
+                        <div class="icon i-left">
+                            <i class="icon-sequence"></i>
+                        </div>
+                        <div class="icon i-left">
+                            <i class="icon-prev"></i>
+                        </div>
+                        <div class="icon i-center">
+                            <i class="icon-play"></i>
+                        </div>
+                        <div class="icon i-right">
+                            <i class="icon-next"></i>
+                        </div>
+                        <div class="icon i-right">
+                            <i class="icon-not-favorite"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="bottom">
-                <div class="operators">
-                    <div class="icon i-left">
-                        <i class="icon-sequence"></i>
-                    </div>
-                    <div class="icon i-left">
-                        <i class="icon-prev"></i>
-                    </div>
-                    <div class="icon i-center">
-                        <i class="icon-play"></i>
-                    </div>
-                    <div class="icon i-right">
-                        <i class="icon-next"></i>
-                    </div>
-                    <div class="icon i-right">
-                        <i class="icon-not-favorite"></i>
-                    </div>
+        </transition>
+        <transition name="mini">
+            <div class="mini-player" v-show="!fullScreen">
+                <div class="icon" @click="open">
+                    <img :src="currentSong.image" alt="" width="40" height="40">
+                </div>
+                <div class="text">
+                    <h2 class="name" v-html="currentSong.name"></h2>
+                    <p class="desc" v-html="currentSong.singer"></p>
+                </div>
+                <div class="control">
+                    <i class="icon-plays"></i>
+                </div>
+                <div class="control">
+                    <i class="icon-playlist"></i>
                 </div>
             </div>
-        </div>
-        <div class="mini-player" v-show="!fullScreen">
-            <div class="icon" @click="open">
-                <img :src="currentSong.image" alt="" width="40" height="40">
-            </div>
-            <div class="text">
-                <h2 class="name" v-html="currentSong.name"></h2>
-                <p class="desc" v-html="currentSong.singer"></p>
-            </div>
-            <div class="control"></div>
-            <div class="control">
-                <i class="icon-playlist"></i>
-            </div>
-        </div>
+        </transition>
     </div>
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
+import animations from 'create-keyframe-animation'
 
 export default {
     computed: {
@@ -76,6 +83,50 @@ export default {
         open() {
             this.setFullScreen(true)
         },
+        /**
+         * enter、afterEnter、leave、afterLeave钩子函数，可以在里面书写动画
+         * dom
+         * done 回调
+         */
+        enter(el, done) {
+            const {x, y, scale} = this._getPosAndScale()
+
+            let animation = {
+                0: {
+                    transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
+                },
+                60: {
+                    transform: `translate3d(0, 0, 0) scale(1.1)`
+                },
+                100: {
+                    transform: `translate3d(0, 0, 0) scale(1)`
+                }
+            }
+        },
+        afterEnter( ) {
+
+        },
+        leave(el, done) {
+
+        },
+        afterLeave( ) {
+
+        },
+        _getPosAndScale() {
+            const targetWidth = 40
+            const paddingLeft = 40
+            const paddingBottom = 30
+            const paddingTop = 80
+            const width = window.innerWidth * 0.8
+            const scale = targetWidth / width
+            const x = - (window.innerWidth / 2 - paddingLeft)
+            const y = window.innerHeight - paddingTop - (width / 2) - paddingBottom
+            return {
+                x,
+                y,
+                scale
+            }
+        },
         ...mapMutations({
             setFullScreen: 'SET_FULL_SCREEN'
         })
@@ -84,39 +135,89 @@ export default {
 </script>
 
 <style scoped>
-.icon-sequence{
+.normal-enter-active,
+.normal-leave-active {
+    transition: all 0.4s;
+}
+
+.normal-enter-active,
+.normal-leave-active .top,
+.bottom {
+    transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32);
+}
+
+.normal-enter,
+.normal-leave-to {
+    opacity: 0
+}
+
+.normal-enter,
+.normal-leave-to .top {
+    transform: translate3d(0, -100px, 0)
+}
+
+.normal-enter,
+.normal-leave-to .bottom {
+    transform: translate3d(0, 100px, 0)
+}
+
+.mini-enter-active,
+.mini-leave-active {
+    transition: all 0.4s
+}
+
+.mini-enter,
+.mini-leave-to {
+    opacity: 0
+}
+
+.icon-sequence {
     background: url('../../common/images/sequence.png') no-repeat;
     background-size: 40px 40px;
     padding: 36px;
 }
-.icon-prev{
+
+.icon-prev {
     background: url('../../common/images/prec.png') no-repeat;
     background-size: 40px 40px;
     padding: 40px;
 }
-.icon-play{
+
+.icon-play {
     background: url('../../common/images/play.png') no-repeat;
     background-size: 44px 44px;
     padding: 44px;
 }
-.icon-next{
+
+.icon-next {
     background: url('../../common/images/next.png') no-repeat;
     background-size: 40px 40px;
     padding: 40px;
 }
-.icon-not-favorite{
+
+.icon-not-favorite {
     background: url('../../common/images/love1.png') no-repeat;
     background-size: 40px 40px;
     padding: 38px;
 }
+
 .icon-playlist {
-    background: url('../../common/images/sequence.png') no-repeat;
+    background: url('../../common/images/random.png') no-repeat;
     background-size: 40px 40px;
     padding: 20px;
     position: absolute;
     right: 10px;
     bottom: 8px;
 }
+.icon-plays{
+    background: url('../../common/images/plays.png') no-repeat;
+    background-size: 30px 30px;
+    padding: 20px;
+    position: absolute;
+    right: 48px;
+    bottom: 4px;
+}
+
 .normal-player {
     position: fixed;
     left: 0;
@@ -155,7 +256,7 @@ export default {
     background-size: 16px 16px;
     display: block;
     padding: 16px;
-    margin-left:6px;
+    margin-left: 6px;
     font-size: 14px;
     color: teal;
     transform: rotate(-90deg);
@@ -214,6 +315,9 @@ export default {
 }
 
 
+
+
+
 /* &.play
                 animation: rotate 20s linear infinite
               &.pause
@@ -257,6 +361,9 @@ export default {
     text-align: center;
 }
 
+
+
+
 /* .text {
     line-height: 32px;
     color: orange;
@@ -289,6 +396,9 @@ export default {
 }
 
 
+
+
+
 /* &.active
               width: 20px
               border-radius: 5px
@@ -311,6 +421,9 @@ export default {
 }
 
 
+
+
+
 /* &.time-l
               text-align: left
             &.time-r
@@ -324,6 +437,9 @@ export default {
     display: flex;
     align-items: center;
 }
+
+
+
 
 /* .icon {
     flex: 1;
@@ -380,6 +496,9 @@ export default {
 }
 
 
+
+
+
 /* &.mini-enter-active, &.mini-leave-active
         transition: all 0.4s
       &.mini-enter, &.mini-leave-to
@@ -395,6 +514,9 @@ img {
     border-radius: 50%
 }
 
+
+
+
 /* &.play
             animation: rotate 10s linear infinite
           &.pause
@@ -403,7 +525,7 @@ img {
 .text {
     display: flex;
     flex-direction: column;
-     justify-content: flex-start; 
+    justify-content: flex-start;
     flex: 1;
     line-height: 14px;
     overflow: hidden;
@@ -441,6 +563,9 @@ img {
     left: 0;
     top: 0;
 }
+
+
+
 
 
 /* @keyframes rotate

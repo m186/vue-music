@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "better-scroll": "^0.3.3",
+    "create-keyframe-animation": "^0.1.0",
     "jsonp": "^0.2.1",
     "vue": "^2.3.3",
     "vue-lazyload": "^1.0.6",
