@@ -14,7 +14,7 @@
                 <h2 class="subtitle" v-html="currentSong.singer"></h2>
                 <div class="middle">
                     <div class="middle-l">
-                        <div class="cd-wrapper">
+                        <div class="cd-wrapper" ref="cdWrapper">
                             <div class="cd">
                                 <img :src="currentSong.image" alt="" class="image">
                             </div>
@@ -90,7 +90,7 @@ export default {
          */
         enter(el, done) {
             const {x, y, scale} = this._getPosAndScale()
-
+            // const el = this.$refs.cdWrapper
             let animation = {
                 0: {
                     transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
@@ -102,9 +102,27 @@ export default {
                     transform: `translate3d(0, 0, 0) scale(1)`
                 }
             }
+
+            // 定义注册动画
+            animations.registerAnimation({
+                // 动画名称
+                name: 'move',
+                // 动画
+                animation,
+                // 动画的设置
+                presets: {
+                    duration: 400, // 动画间隔
+                    easing: 'linear' // 动画运行方式
+                    // delay: 500
+                }
+            })
+
+            // 运行动画
+            animations.runAnimation(this.$refs.cdWrapper, 'move', done)
         },
         afterEnter( ) {
-
+            this.unregisterAnimation('move')
+            this.$refs.cdWrapper.style.animation = ''
         },
         leave(el, done) {
 
@@ -313,10 +331,6 @@ export default {
     border: 10px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
 }
-
-
-
-
 
 /* &.play
                 animation: rotate 20s linear infinite

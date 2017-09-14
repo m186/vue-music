@@ -29,7 +29,7 @@ var apiRoutes = express.Router()
 apiRoutes.get('/getDiscList', function(req, res) {
   var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
 
-  axios.get(url, { // 使用 qq 的请求头来欺骗 qq 的服务器
+  axios.get(url, { // 使用 qq 的请求头来劫持(欺骗)qq音乐的服务器
     headers: {
       referer: 'https://c.y.qq.com/',
       host: 'c.y.qq.com'

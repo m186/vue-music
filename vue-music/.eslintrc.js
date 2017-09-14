@@ -49,6 +49,8 @@ module.exports = {
         'space-infix-ops': 0,
         'space-before-blocks': 0,
         'quotes': 0,
-        'yoda': 0
+        'yoda': 0,
+        'space-in-parens': 0,
+        'space-unary-ops': 0
     }
 }
